@@ -1,0 +1,37 @@
+LTspice 24.1.4 for Windows
+Circuit: C:\Users\Tiger\Desktop\nini_project\Pseudonor.net
+Start Time: Sun May 18 21:16:03 2025
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = trap
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Direct Newton iteration for .op point succeeded.
+Total elapsed time: 1.205 seconds.
+
+Files loaded:
+C:\Users\Tiger\Desktop\nini_project\Pseudonor.net
+C:\Users\Tiger\AppData\Local\LTspice\lib\cmp\standard.mos
+
+power: AVG(I(V1))=-0.000282574833836 FROM 0 TO 5e-08
+delay=2.77597477499e-11 FROM 1.15000000111e-09 TO 1.17775974886e-09
+Iavg: AVG(I(V1))=-0.000282574833836 FROM 0 TO 5e-08
+Vmax: MAX(V(Vout))=1.89250278473 FROM 0 TO 5e-08
+Vmin: MIN(V(Vout))=0.0408194474876 FROM 0 TO 5e-08
+delay_B=2.77597477499e-11 FROM 1.15000000111e-09 TO 1.17775974886e-09
+delay_C=2.77597477499e-11 FROM 1.15000000111e-09 TO 1.17775974886e-09
+delay_D=2.77597477499e-11 FROM 1.15000000111e-09 TO 1.17775974886e-09
