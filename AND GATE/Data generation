@@ -1,0 +1,105 @@
+import re
+import csv
+import random
+import os
+
+# LTspice log file path (do not change)
+log_file = "C:\\Users\\Tiger\\Desktop\\nini_project\\Inverter.log"
+
+# CSV file path (do not change)
+csv_file = "C:\\Users\\Tiger\\Desktop\\nini_project\\ltspice_rereredatas.csv"
+
+# Read LTspice log file
+with open(log_file, "r") as file:
+    log_data = file.readlines()
+
+# Extract Power and Delay from LTspice log
+power_value = None
+delay_value = None
+
+for line in log_data:
+    if "AVG(I(VDD))" in line:
+        match = re.search(r"=(-?\d+\.\d+e[+-]?\d+)", line)
+        if match:
+            power_value = float(match.group(1))
+    if "delay=" in line:
+        match = re.search(r"=(-?\d+\.\d+e[+-]?\d+)", line)
+        if match:
+            delay_value = float(match.group(1))
+
+if power_value is None or delay_value is None:
+    raise ValueError("Failed to extract power or delay values from LTspice log.")
+
+# Fixed 180nm Technology Parameters
+VDD = 1.8  # Supply voltage (V)
+num_simulations = 10000
+L = 0.18  # Channel length (µm)
+
+# Transistor Width Ranges for 180nm
+NMOS_range = (0.18, 5.0)   # µm
+PMOS_range = (0.36, 10.0)  # µm
+
+# Open CSV file and write multiple data points
+try:
+    with open(csv_file, "a", newline="") as file:
+        writer = csv.writer(file)
+
+        # Write header if file is empty
+        if os.stat(csv_file).st_size == 0:
+            writer.writerow([
+                "NMOS_W", "PMOS_W", "VDD", "Power (µW)", "Delay (ps)", "Area (µm²)",
+                "Interconnect Area (µm²)", "Spacing Area (µm²)", "Total Area (µm²)",
+                "Rise Time (ps)", "Fall Time (ps)", "Energy (fJ)", "Leakage Power (nW)",
+                "Output Swing (V)", "Noise Margin High (V)", "Noise Margin Low (V)",
+                "Threshold Voltage (V)", "Load Capacitance (fF)", "Gate Overdrive (V)"
+            ])
+
+        for _ in range(num_simulations):
+            # Random transistor sizes
+            NMOS_W = round(random.uniform(*NMOS_range), 2)
+            PMOS_W = round(random.uniform(*PMOS_range), 2)
+
+            # Transistor area calculation (µm²)
+            A_transistors = (NMOS_W * L) + (PMOS_W * L)
+
+            # Interconnect and spacing areas with variability
+            K_metal = random.uniform(1.5, 3.0)
+            A_interconnect = K_metal * A_transistors
+
+            K_spacing = random.uniform(0.5, 1.5)
+            A_spacing = K_spacing * A_transistors
+
+            # Total area
+            A_total = A_transistors + A_interconnect + A_spacing
+
+            # Power and delay variations based on exact LTspice values
+            power_variation = random.uniform(0.85, 1.30)   # ±25%
+            delay_variation = random.uniform(0.85, 1.15)  # ±15%
+
+            power_uw = abs(power_value * VDD) * 1e6 * power_variation  # µW
+            delay_ps = delay_value * 1e12 * delay_variation  # ps
+
+            # Additional parameters
+            rise_time_ps = delay_ps * random.uniform(0.25, 0.65)
+            fall_time_ps = delay_ps * random.uniform(0.25, 0.65)
+            energy_fJ = power_uw * delay_ps * 1e-6  # fJ
+            leakage_power_nW = power_uw * random.uniform(0.005, 0.04)
+            output_swing = VDD * random.uniform(0.85, 1.0)
+            noise_margin_high = VDD * random.uniform(0.25, 0.55)
+            noise_margin_low = VDD * random.uniform(0.25, 0.55)
+            threshold_voltage = VDD * random.uniform(0.15, 0.35)
+            load_capacitance = random.uniform(1.0, 10.0)
+            gate_overdrive = VDD - threshold_voltage
+
+            # Write row to CSV
+            writer.writerow([
+                NMOS_W, PMOS_W, VDD, power_uw, delay_ps, A_transistors,
+                A_interconnect, A_spacing, A_total, rise_time_ps, fall_time_ps,
+                energy_fJ, leakage_power_nW, output_swing, noise_margin_high,
+                noise_margin_low, threshold_voltage, load_capacitance, gate_overdrive
+            ])
+
+        print(f"✅ Successfully saved {num_simulations} entries to: {csv_file}")
+
+except Exception as e:
+    print(f"❌ Error: Failed to write to CSV. Reason: {e}")
