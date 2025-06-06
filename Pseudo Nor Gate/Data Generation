@@ -1,0 +1,106 @@
+import re
+import csv
+import random
+import os
+
+# === File Paths ===
+log_file = "C:\\Users\\Tiger\\Desktop\\nini_project\\Pseudonor.log"
+csv_file = "C:\\Users\\Tiger\\Desktop\\nini_project\\ltspice_data_pnors.csv"
+
+# === Read LTspice Log ===
+with open(log_file, "r") as file:
+    log_data = file.readlines()
+
+# === Extract Power and Delay ===
+power_value = None
+delays = []
+
+for line in log_data:
+    # Extract average current
+    if "AVG(I(V1))" in line:
+        match = re.search(r"AVG\(I\(V1\)\)=([-+]?\d*\.\d+(?:e[-+]?\d+)?)", line, re.IGNORECASE)
+        if match:
+            current_avg = float(match.group(1))
+            power_value = abs(current_avg) * 1.8 * 1e6  # Power in µW
+
+    # Extract delay
+    delay_match = re.search(r"delay(?:_[A-Z])?=([-+]?\d*\.\d+(?:e[-+]?\d+)?)", line, re.IGNORECASE)
+    if delay_match:
+        delays.append(float(delay_match.group(1)))
+
+delay_value = max(delays) if delays else None
+
+# === Parameters ===
+VDD = 1.8
+num_simulations = 20000
+L = 0.18  # µm
+
+NMOS_range = (0.18, 5.0)
+PMOS_range = (0.36, 10.0)
+
+try:
+    with open(csv_file, "a", newline="") as file:
+        writer = csv.writer(file)
+
+        # Write header if new file
+        if os.stat(csv_file).st_size == 0:
+            writer.writerow([
+                "PMOS_W", "NMOS1_W", "NMOS2_W", "NMOS3_W", "NMOS4_W", "VDD",
+                "Power (µW)", "Delay (ps)", "Area (µm²)", "Interconnect Area (µm²)",
+                "Spacing Area (µm²)", "Total Area (µm²)", "Rise Time (ps)",
+                "Fall Time (ps)", "Energy (fJ)", "Leakage Power (nW)",
+                "Output Swing (V)", "Noise Margin High (V)", "Noise Margin Low (V)",
+                "Threshold Voltage (V)", "Load Capacitance (fF)", "Gate Overdrive (V)"
+            ])
+
+        for _ in range(num_simulations):
+            # === Transistor Sizing ===
+            PMOS_W = round(random.uniform(*PMOS_range), 3)
+            NMOS1_W = round(random.uniform(*NMOS_range), 3)
+            NMOS2_W = round(random.uniform(*NMOS_range), 3)
+            NMOS3_W = round(random.uniform(*NMOS_range), 3)
+            NMOS4_W = round(random.uniform(*NMOS_range), 3)
+
+            # === Area Calculations ===
+            A_transistors = (PMOS_W + NMOS1_W + NMOS2_W + NMOS3_W + NMOS4_W) * L
+            K_metal = random.uniform(1.5, 3.0)
+            A_interconnect = K_metal * A_transistors
+            K_spacing = random.uniform(0.5, 1.5)
+            A_spacing = K_spacing * A_transistors
+            A_total = A_transistors + A_interconnect + A_spacing
+
+            # === Static Power (µW) from LTspice ===
+            static_power_uw = round(power_value, 2) if power_value else None
+
+            # === Delay with slight noise ===
+            delay_ps = round(delay_value * 1e12 * random.uniform(0.97, 1.03), 2) if delay_value else None
+
+            # === Timing Metrics ===
+            rise_time_ps = round(delay_ps * random.uniform(0.25, 0.65), 2) if delay_ps else None
+            fall_time_ps = round(delay_ps * random.uniform(0.25, 0.65), 2) if delay_ps else None
+
+            # === Energy & Leakage ===
+            energy_fJ = round(static_power_uw * delay_ps * 1e-6, 2) if static_power_uw and delay_ps else None
+            leakage_power_nW = round(static_power_uw * random.uniform(0.005, 0.03), 2) if static_power_uw else None
+
+            # === Other Metrics ===
+            output_swing = round(VDD * random.uniform(0.85, 1.0), 3)
+            noise_margin_high = round(VDD * random.uniform(0.25, 0.55), 3)
+            noise_margin_low = round(VDD * random.uniform(0.25, 0.55), 3)
+            threshold_voltage = round(VDD * random.uniform(0.15, 0.35), 3)
+            load_capacitance = round(random.uniform(1.0, 10.0), 2)
+            gate_overdrive = round(VDD - threshold_voltage, 3)
+
+            writer.writerow([
+                PMOS_W, NMOS1_W, NMOS2_W, NMOS3_W, NMOS4_W, VDD,
+                static_power_uw, delay_ps, round(A_transistors, 2),
+                round(A_interconnect, 2), round(A_spacing, 2), round(A_total, 2),
+                rise_time_ps, fall_time_ps, energy_fJ, leakage_power_nW,
+                output_swing, noise_margin_high, noise_margin_low,
+                threshold_voltage, load_capacitance, gate_overdrive
+            ])
+
+        print(f"✅ Successfully saved {num_simulations} entries to: {csv_file}")
+
+except Exception as e:
+    print(f"❌ Error: Failed to write to CSV. Reason: {e}")
