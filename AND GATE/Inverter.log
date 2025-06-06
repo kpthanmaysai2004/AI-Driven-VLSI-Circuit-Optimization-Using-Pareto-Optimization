@@ -1,0 +1,28 @@
+LTspice 24.1.4 for Windows
+Circuit: C:\Users\Tiger\Desktop\nini_project\Inverter.net
+Start Time: Sun May 18 19:12:51 2025
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = trap
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Direct Newton iteration for .op point succeeded.
+Total elapsed time: 0.543 seconds.
+
+Files loaded:
+C:\Users\Tiger\Desktop\nini_project\Inverter.net
+C:\Users\Tiger\AppData\Local\LTspice\lib\cmp\standard.mos
+
+power: AVG(I(VDD))=-4.22958466595e-06 FROM 0 TO 5e-09
+Iavg: AVG(I(VDD))=-4.22958466595e-06 FROM 0 TO 5e-09
+Vmax: MAX(V(Vout))=1.85399842262 FROM 0 TO 5e-09
+Vmin: MIN(V(Vout))=-0.0454030483961 FROM 0 TO 5e-09
+delay=7.58201783361e-11 FROM 3.07499999981e-09 TO 3.15082017814e-09
