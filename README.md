@@ -26,7 +26,7 @@ Other features: Rise/Fall time, Energy, Noise Margins, etc.
 
 Format: CSV file with each row = one simulation.
 
-# STEP 2: Preprocessing the Data
+# STEP 2: Preprocessing the Data Using Spyder
 Load CSV with proper encoding detection.
 
 Normalize input features (NMOS_W, PMOS_W, VDD) using StandardScaler.
