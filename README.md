@@ -1,0 +1,2 @@
+# AI-Driven-VLSI-Circuit-Optimization-Using-Pareto-Optimization
+• Optimized CMOS circuit design using AI techniques like Machine Learning (Random Forest) and Genetic Algorithms to balance Power, Performance (Delay), and Area (PPA). • Designed and simulated circuits in LTspice, extracting key metrics for training the model. Automated transistor sizing for efficient VLSI design without manual tuning.
