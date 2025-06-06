@@ -1,0 +1,29 @@
+LTspice 24.1.4 for Windows
+Circuit: C:\Users\Tiger\Desktop\nini_project\Nand.net
+Start Time: Thu Apr 17 20:39:53 2025
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+Ignoring BSIM parameter XL
+Ignoring BSIM parameter XW
+solver = Normal
+Maximum thread count: 4
+tnom = 27
+temp = 27
+method = trap
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Warning: Pd = 0 is less than W.
+Warning: Ps = 0 is less than W.
+Direct Newton iteration for .op point succeeded.
+Total elapsed time: 0.251 seconds.
+
+Files loaded:
+C:\Users\Tiger\Desktop\nini_project\Nand.net
+C:\Users\Tiger\AppData\Local\LTspice\lib\cmp\standard.mos
+
+power: AVG(I(VDD))=-1.16617212574e-05 FROM 0 TO 9.99e-09
+delay_a=5.59390067838e-11 FROM 3.99999998775e-11 TO 9.59390066613e-11
+Iavg: AVG(I(VDD))=-1.16617212574e-05 FROM 0 TO 9.99e-09
+Vmax: MAX(V(Vout))=1.8921507597 FROM 0 TO 9.99e-09
+Vmin: MIN(V(Vout))=-0.144976601005 FROM 0 TO 9.99e-09
+delay_b=5.59390067838e-11 FROM 3.99999998775e-11 TO 9.59390066613e-11
